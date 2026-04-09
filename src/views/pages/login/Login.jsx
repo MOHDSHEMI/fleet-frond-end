@@ -113,7 +113,7 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Fleet Management</h2>
+                    <h2>SINAN TRADERS</h2>
                     <p>
                       Manage your lorries, Hiace vehicles, insurance renewals, expenses and trips
                       all in one place.

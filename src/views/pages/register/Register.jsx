@@ -8,13 +8,14 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CRow,
   CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilLockUnlocked, cilUser } from '@coreui/icons'
+import { cilLockLocked, cilLockUnlocked, cilUser, cilPeople } from '@coreui/icons'
 import { registerUser } from '../../../services/authService'
 
 const Register = () => {
@@ -22,6 +23,7 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+  const [role, setRole] = useState('user')
   const [showPassword, setShowPassword] = useState(false)
   const [showRepeatPassword, setShowRepeatPassword] = useState(false)
   const [error, setError] = useState('')
@@ -33,13 +35,11 @@ const Register = () => {
     setError('')
     setSuccess('')
 
-    // Validate passwords match
     if (password !== repeatPassword) {
       setError('Passwords do not match!')
       return
     }
 
-    // Validate password length
     if (password.length < 6) {
       setError('Password must be at least 6 characters!')
       return
@@ -47,7 +47,7 @@ const Register = () => {
 
     setLoading(true)
     try {
-      await registerUser(email, password)
+      await registerUser(email, password, role)
       setSuccess('Account created successfully! Redirecting to login...')
       setTimeout(() => {
         navigate('/login')
@@ -111,7 +111,7 @@ const Register = () => {
                     </CInputGroupText>
                   </CInputGroup>
 
-                  <CInputGroup className="mb-4">
+                  <CInputGroup className="mb-3">
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
                     </CInputGroupText>
@@ -131,25 +131,31 @@ const Register = () => {
                     </CInputGroupText>
                   </CInputGroup>
 
-                  <div className="d-grid">
-                    <CButton
-                      color="success"
-                      type="submit"
-                      disabled={loading}
+                  {/* Role selector */}
+                  <CInputGroup className="mb-4">
+                    <CInputGroupText>
+                      <CIcon icon={cilPeople} />
+                    </CInputGroupText>
+                    <CFormSelect
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
                     >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </CFormSelect>
+                  </CInputGroup>
+
+                  <div className="d-grid">
+                    <CButton color="success" type="submit" disabled={loading}>
                       {loading ? 'Creating Account...' : 'Create Account'}
                     </CButton>
                   </div>
 
                   <div className="text-center mt-3">
-                    <CButton
-                      color="link"
-                      onClick={() => navigate('/login')}
-                    >
+                    <CButton color="link" onClick={() => navigate('/login')}>
                       Already have an account? Login
                     </CButton>
                   </div>
-
                 </CForm>
               </CCardBody>
             </CCard>

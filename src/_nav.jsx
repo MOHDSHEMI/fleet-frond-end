@@ -554,6 +554,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Vehicles',
+        to: '/vehicles',
+      },
+      {
+        component: CNavItem,
+        name: 'Vehicle Details',
+        to: '/vehicles/:id',
+      },
+      {
+        component: CNavItem,
         name: 'Error 404',
         to: '/404',
       },

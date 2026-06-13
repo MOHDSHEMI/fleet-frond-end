@@ -72,6 +72,9 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 // If your file is: views/pages/settings/setting.jsx
 const Settings = React.lazy(() => import('./views/pages/settings/settings'));
 
+const VehicleList = React.lazy(() => import('./views/pages/Vehicles/Vehiclelist'));
+const VehicleDetail = React.lazy(() => import('./views/pages/Vehicles/Vehicledetail'));
+
 /**
  * Array of route configuration objects
  *
@@ -138,6 +141,10 @@ export const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   {path:'/settings', name:'Settings', element:Settings},
+    {path:'/vehicles', name:'Vehicles', element:VehicleList},
+    {path:'/vehicles/:id', name:'Vehicle Details', element:VehicleDetail},
+
+  
 
 ]
 

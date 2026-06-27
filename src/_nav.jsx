@@ -557,6 +557,11 @@ const _nav = [
         name: 'Vehicles',
         to: '/vehicles',
       },
+      {
+        component: CNavItem,
+        name: 'Parties',
+        to: '/parties',
+      },
       // {
       //   component: CNavItem,
       //   name: 'Vehicle Details',

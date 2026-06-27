@@ -74,6 +74,7 @@ const Settings = React.lazy(() => import('./views/pages/settings/settings'));
 
 const VehicleList = React.lazy(() => import('./views/pages/Vehicles/Vehiclelist'));
 const VehicleDetail = React.lazy(() => import('./views/pages/Vehicles/Vehicledetail'));
+const PartiesList = React.lazy(() => import('./views/pages/Parties/PartiesList'));
 
 /**
  * Array of route configuration objects
@@ -140,11 +141,12 @@ export const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
-  {path:'/settings', name:'Settings', element:Settings},
-    {path:'/vehicles', name:'Vehicles', element:VehicleList},
-    {path:'/vehicles/:id', name:'Vehicle Details', element:VehicleDetail},
+  { path: '/settings', name: 'Settings', element: Settings },
+  { path: '/vehicles', name: 'Vehicles', element: VehicleList },
+  { path: '/vehicles/:id', name: 'Vehicle Details', element: VehicleDetail },
+  { path: '/parties', name: 'Parties', element: PartiesList },
 
-  
+
 
 ]
 

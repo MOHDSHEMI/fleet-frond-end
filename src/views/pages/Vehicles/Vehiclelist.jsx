@@ -368,11 +368,11 @@ const StepContent = ({ step, form, set, isEdit = false }) => {
           <Inp label="Battery Purchase Date"   type="date" value={form.batteryPurchaseDate} onChange={set('batteryPurchaseDate')} />
           <Inp label="Battery Warranty Expiry" type="date" value={form.batteryWarrantyDate} onChange={set('batteryWarrantyDate')} />
         </Row>
-        <Divider icon="tyre" label="Tyres" />
+        {/* <Divider icon="tyre" label="Tyres" />
         <Row cols={2}>
           <Inp label="Tyre Purchase Date"   type="date" value={form.tyrePurchaseDate} onChange={set('tyrePurchaseDate')} />
           <Inp label="Tyre Warranty Expiry" type="date" value={form.tyreWarrantyDate} onChange={set('tyreWarrantyDate')} />
-        </Row>
+        </Row> */}
       </>
     )
     case 5: return (
@@ -529,7 +529,7 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
     { label: 'Tax',       d: v.taxExpiryDate },
     { label: 'Permit',    d: v.permitExpiryDate },
     { label: 'Battery',   d: v.batteryWarrantyExpiryDate ?? v.batteryWarrantyDate },
-    { label: 'Tyre',      d: v.tyreWarrantyExpiryDate    ?? v.tyreWarrantyDate },
+    // { label: 'Tyre',      d: v.tyreWarrantyExpiryDate    ?? v.tyreWarrantyDate },
   ].filter(a => { const days = daysUntil(a.d); return days !== null && days <= 30 })
 
   return (

@@ -7,6 +7,7 @@ import FuelTab        from './Fueltab'
 import MaintenanceTab from './Maintenancetab'
 import SummaryTab     from './Summarytab'
 import DocumentsTab   from './DcoumentTab'
+import TyreTab       from './Tyretab'
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS  (identical to VehicleList)
 ───────────────────────────────────────────────────────────── */
@@ -154,6 +155,7 @@ const TABS = [
   { key: 'summary',     label: 'Summary',      icon: 'summary'     },
   { key: 'fuel',        label: 'Fuel Logs',    icon: 'fuel'        },
   { key: 'maintenance', label: 'Maintenance',  icon: 'maintenance' },
+  { key: 'tyres',       label: 'Tyres',        icon: 'tyres'       },
   { key: 'documents',    label: 'Documents',     icon: 'documents'    },
 ]
 
@@ -394,7 +396,7 @@ const VehicleDetail = () => {
               </div>
               <div style={{ padding: '0 18px 16px' }}>
                 <InfoRow icon="settings" label="Battery" value={vehicle.batteryWarrantyExpiryDate ?? vehicle.batteryWarrantyDate ? `Exp: ${vehicle.batteryWarrantyExpiryDate ?? vehicle.batteryWarrantyDate}` : null} />
-                <InfoRow icon="settings" label="Tyres"   value={vehicle.tyreWarrantyExpiryDate   ?? vehicle.tyreWarrantyDate   ? `Exp: ${vehicle.tyreWarrantyExpiryDate   ?? vehicle.tyreWarrantyDate}`   : null} />
+                {/* <InfoRow icon="settings" label="Tyres"   value={vehicle.tyreWarrantyExpiryDate   ?? vehicle.tyreWarrantyDate   ? `Exp: ${vehicle.tyreWarrantyExpiryDate   ?? vehicle.tyreWarrantyDate}`   : null} /> */}
               </div>
             </div>
 
@@ -444,6 +446,7 @@ const VehicleDetail = () => {
               {tab === 'summary'     && <SummaryTab     summary={summary} vehicleType={vehicle.type} />}
               {tab === 'fuel'        && <FuelTab        vehicleId={id} vehicleType={vehicle.type} />}
               {tab === 'maintenance' && <MaintenanceTab vehicleId={id} vehicleType={vehicle.type} />}
+              {tab === 'tyres'       && <TyreTab       vehicleId={id} vehicleType={vehicle.type} />}
               {tab === 'documents'   && <DocumentsTab   vehicleId={id} />}
             </div>
           </div>

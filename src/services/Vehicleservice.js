@@ -29,6 +29,13 @@ export const getMaintenance   = (id)      => api.get(`/vehicles/${id}/maintenanc
 export const addMaintenance   = (id, dto) => api.post(`/vehicles/${id}/maintenance`, dto).then(r => r.data)
 export const deleteMaintenance= (recId)   => api.delete(`/vehicles/maintenance/${recId}`).then(r => r.data)
 
+// ── Tyres ─────────────────────────────────────────────
+export const getTyres     = (id)               => api.get(`/vehicles/${id}/tyres`).then(r => r.data)
+export const addTyre      = (id, dto)          => api.post(`/vehicles/${id}/tyres`, dto).then(r => r.data)
+export const updateTyre   = (tyreId, dto)      => api.patch(`/vehicles/tyres/${tyreId}`, dto).then(r => r.data)
+export const deleteTyre   = (tyreId)           => api.delete(`/vehicles/tyres/${tyreId}`).then(r => r.data)
+export const replaceTyre  = (id, tyreId, dto)  => api.post(`/vehicles/${id}/tyres/${tyreId}/replace`, dto).then(r => r.data)
+
 // ── Documents ─────────────────────────────────────────
 // GET  /vehicles/:id/documents
 export const getDocuments = (id) =>

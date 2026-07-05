@@ -166,7 +166,7 @@ const EMPTY = {
 }
 
 /* ── TyreTab ── */
-const TyreTab = ({ vehicleId }) => {
+const Tyretab = ({ vehicleId }) => {
   const [tyres,   setTyres]   = useState([])
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')

@@ -461,4 +461,4 @@ const Tyretab = ({ vehicleId }) => {
   )
 }
 
-export default TyreTab
+export default Tyretab

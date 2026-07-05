@@ -12,7 +12,7 @@ import TyreTab       from './Tyretab'
    DESIGN TOKENS  (identical to VehicleList)
 ───────────────────────────────────────────────────────────── */
 const T = {
-  navy:         '#0f1629',
+  navy:         '#0e1529',
   navyMid:      '#1e2a45',
   navyLight:    '#2d3f5f',
   blue:         '#2563eb',

@@ -7,7 +7,7 @@ import FuelTab        from './Fueltab'
 import MaintenanceTab from './Maintenancetab'
 import SummaryTab     from './Summarytab'
 import DocumentsTab   from './DcoumentTab'
-import TyreTab       from './Tyretab'
+import Tyretab       from './Tyretab'
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS  (identical to VehicleList)
 ───────────────────────────────────────────────────────────── */

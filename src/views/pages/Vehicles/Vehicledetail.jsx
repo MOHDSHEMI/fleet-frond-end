@@ -108,6 +108,7 @@ const ExpiryTag = ({ label, dateStr }) => {
       background: expired ? T.dangerLight : T.warnLight,
       color:      expired ? T.danger      : T.warn,
       border:     `1px solid ${expired ? T.dangerBorder : '#fed7aa'}`,
+      whiteSpace: 'nowrap',
     }}>
       <span style={{ width: 5, height: 5, borderRadius: '50%',
         background: expired ? T.danger : T.warn, flexShrink: 0 }} />
@@ -121,13 +122,14 @@ const ExpiryTag = ({ label, dateStr }) => {
 ───────────────────────────────────────────────────────────── */
 const StatCard = ({ icon, label, value, sub, accent }) => (
   <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 10,
-    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
     <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0,
       background: accent + '18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Icon name={icon} size={18} color={accent} />
     </div>
-    <div>
-      <div style={{ fontSize: 22, fontWeight: 800, color: T.textPrimary, lineHeight: 1 }}>{value}</div>
+    <div style={{ minWidth: 0 }}>
+      <div style={{ fontSize: 22, fontWeight: 800, color: T.textPrimary, lineHeight: 1,
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</div>
       <div style={{ fontSize: 12, color: T.textMuted, marginTop: 3 }}>{label}</div>
       {sub && <div style={{ fontSize: 11, color: T.textSecond, marginTop: 1 }}>{sub}</div>}
     </div>
@@ -142,7 +144,7 @@ const InfoRow = ({ icon, label, value }) => (
     padding: '8px 0', borderBottom: `1px solid ${T.border}` }}>
     <Icon name={icon} size={13} color={T.textMuted} />
     <span style={{ fontSize: 12, color: T.textMuted, width: 110, flexShrink: 0 }}>{label}</span>
-    <span style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary }}>{value || '—'}</span>
+    <span style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, overflow: 'hidden', textOverflow: 'ellipsis' }}>{value || '—'}</span>
   </div>
 )
 
@@ -158,6 +160,132 @@ const TABS = [
   { key: 'tyres',       label: 'Tyres',        icon: 'tyres'       },
   { key: 'documents',    label: 'Documents',     icon: 'documents'    },
 ]
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE STYLE SHEET
+   Inline styles can't do media queries, so the layout-critical
+   rules below live in real CSS and are toggled via className.
+   Inline styles remain as the desktop baseline.
+───────────────────────────────────────────────────────────── */
+const ResponsiveStyles = () => (
+  <style>{`
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .vd-page { }
+    .vd-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .vd-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .vd-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .vd-month-picker { display: flex; align-items: center; gap: 8px; }
+    .vd-month-input { border: 1px solid ${T.border}; border-radius: 7px; padding: 6px 10px;
+      font-size: 13px; color: ${T.textPrimary}; background: ${T.white}; outline: none;
+      font-family: inherit; cursor: pointer; }
+
+    .vd-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .vd-main-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .vd-tabbar {
+      display: flex;
+      border-bottom: 1px solid ${T.border};
+      background: ${T.slateLight};
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    .vd-tabbar::-webkit-scrollbar { height: 4px; }
+    .vd-tabbar::-webkit-scrollbar-thumb { background: ${T.border}; border-radius: 4px; }
+
+    .vd-tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 13px 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+      transition: all 0.12s;
+      font-family: inherit;
+    }
+
+    .vd-tab-content { padding: 20px; }
+
+    .vd-doc-alerts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+      padding: 12px 16px; background: ${T.warnLight}; border: 1px solid #fed7aa;
+      border-radius: 8px; align-items: center; }
+
+    /* ── Tablet ── */
+    @media (max-width: 900px) {
+      .vd-main-grid {
+        grid-template-columns: 1fr;
+      }
+      .vd-info-panel { order: 2; }
+      .vd-tabs-panel { order: 1; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .vd-page-header { padding: 16px !important; }
+      .vd-content-wrap { padding: 16px !important; }
+
+      .vd-header-inner { gap: 12px; }
+      .vd-header-left { width: 100%; }
+      .vd-back-label { display: none; }
+      .vd-title-row h1 { font-size: 17px !important; }
+
+      .vd-month-picker { width: 100%; }
+      .vd-month-picker .vd-month-input { flex: 1; }
+
+      .vd-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .vd-stat-card { padding: 12px 14px !important; gap: 10px !important; }
+      .vd-stat-value { font-size: 18px !important; }
+
+      .vd-doc-alerts { padding: 10px 12px; }
+
+      .vd-tab-btn {
+        flex: 0 0 auto;
+        min-width: 84px;
+        padding: 11px 12px;
+        font-size: 11px;
+      }
+      .vd-tab-content { padding: 14px; }
+
+      .vd-main-grid { gap: 12px; }
+    }
+
+    @media (max-width: 400px) {
+      .vd-tab-label { display: none; }
+      .vd-tab-btn { min-width: 48px; padding: 12px 10px; }
+    }
+  `}</style>
+)
 
 /* ─────────────────────────────────────────────────────────────
    MAIN COMPONENT
@@ -189,13 +317,13 @@ const VehicleDetail = () => {
     <div style={{ minHeight: '100vh', background: '#f1f5f9', display: 'flex',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Geist', 'DM Sans', system-ui, sans-serif" }}>
+      <ResponsiveStyles />
       <div style={{ textAlign: 'center' }}>
         <div style={{ width: 36, height: 36, border: `3px solid ${T.border}`,
           borderTopColor: T.blue, borderRadius: '50%',
           animation: 'spin 0.7s linear infinite', margin: '0 auto 12px' }} />
         <p style={{ color: T.textMuted, fontSize: 14 }}>Loading vehicle data…</p>
       </div>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 
@@ -203,8 +331,10 @@ const VehicleDetail = () => {
     <div style={{ minHeight: '100vh', background: '#f1f5f9', display: 'flex',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Geist', 'DM Sans', system-ui, sans-serif" }}>
+      <ResponsiveStyles />
       <div style={{ padding: '20px 28px', background: T.dangerLight,
-        border: `1px solid ${T.dangerBorder}`, borderRadius: 10, color: T.danger, fontSize: 14 }}>
+        border: `1px solid ${T.dangerBorder}`, borderRadius: 10, color: T.danger, fontSize: 14,
+        margin: '0 16px' }}>
         Vehicle not found.
       </div>
     </div>
@@ -221,26 +351,25 @@ const VehicleDetail = () => {
   ].filter(a => { const d = daysUntil(a.d); return d !== null && d <= 30 })
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f1f5f9',
+    <div className="vd-page" style={{ minHeight: '100vh', background: '#f1f5f9',
       fontFamily: "'Geist', 'DM Sans', system-ui, sans-serif" }}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <ResponsiveStyles />
 
       {/* ── PAGE HEADER ── */}
-      <div style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: '20px 28px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="vd-page-header" style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: '20px 28px' }}>
+        <div className="vd-header-inner" style={{ maxWidth: 1280, margin: '0 auto' }}>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div className="vd-header-left">
             {/* Back button */}
             <button
               onClick={() => navigate('/vehicles')}
               style={{ display: 'flex', alignItems: 'center', gap: 6,
                 padding: '7px 14px', borderRadius: 7, border: `1px solid ${T.border}`,
                 background: T.white, color: T.textSecond, fontSize: 13, fontWeight: 600,
-                cursor: 'pointer', transition: 'all 0.12s' }}
+                cursor: 'pointer', transition: 'all 0.12s', flexShrink: 0 }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = T.blue; e.currentTarget.style.color = T.blue }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textSecond }}>
-              <Icon name="back" size={13} /> Back
+              <Icon name="back" size={13} /> <span className="vd-back-label">Back</span>
             </button>
 
             {/* Vehicle icon */}
@@ -250,19 +379,20 @@ const VehicleDetail = () => {
             </div>
 
             {/* Title */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="vd-title-row">
                 <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800,
                   color: T.textPrimary, letterSpacing: '-0.02em' }}>
                   {vehicle.name}
                 </h1>
                 <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20,
                   background: cfg.pill.bg, color: cfg.pill.text, border: `1px solid ${cfg.pill.border}`,
-                  letterSpacing: '0.03em' }}>
+                  letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                   {cfg.label}
                 </span>
               </div>
-              <p style={{ margin: '3px 0 0', fontSize: 13, color: T.textMuted }}>
+              <p style={{ margin: '3px 0 0', fontSize: 13, color: T.textMuted,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {vehicle.registrationNumber}
                 {vehicle.driverName && ` · ${vehicle.driverName}`}
               </p>
@@ -270,22 +400,20 @@ const VehicleDetail = () => {
           </div>
 
           {/* Month picker */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="vd-month-picker">
             <Icon name="calendar" size={14} color={T.textMuted} />
-            <span style={{ fontSize: 12, color: T.textMuted, fontWeight: 600 }}>Month</span>
+            <span style={{ fontSize: 12, color: T.textMuted, fontWeight: 600, flexShrink: 0 }}>Month</span>
             <input
               type="month"
               value={month}
               onChange={e => setMonth(e.target.value)}
-              style={{ border: `1px solid ${T.border}`, borderRadius: 7, padding: '6px 10px',
-                fontSize: 13, color: T.textPrimary, background: T.white, outline: 'none',
-                fontFamily: 'inherit', cursor: 'pointer' }}
+              className="vd-month-input"
             />
           </div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: 28 }}>
+      <div className="vd-content-wrap" style={{ maxWidth: 1280, margin: '0 auto', padding: 28 }}>
 
         {/* ── ERROR BANNER ── */}
         {error && (
@@ -303,9 +431,7 @@ const VehicleDetail = () => {
 
         {/* ── DOCUMENT ALERTS ── */}
         {docAlerts.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20,
-            padding: '12px 16px', background: T.warnLight,
-            border: '1px solid #fed7aa', borderRadius: 8, alignItems: 'center' }}>
+          <div className="vd-doc-alerts">
             <Icon name="alert" size={14} color={T.warn} />
             <span style={{ fontSize: 12, fontWeight: 700, color: T.warn, marginRight: 4 }}>
               Documents requiring attention:
@@ -315,15 +441,25 @@ const VehicleDetail = () => {
         )}
 
         {/* ── STAT CARDS ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
-          <StatCard
-            icon={vehicle.type === 'lorry' ? 'trending' : 'settings'}
-            label={vehicle.type === 'lorry' ? 'Total KM' : 'Total Hours'}
-            value={vehicle.type === 'lorry'
-              ? `${Number(vehicle.totalKm || 0).toLocaleString('en-IN')} km`
-              : `${Number(vehicle.totalHours || 0).toLocaleString('en-IN')} hrs`}
-            accent={T.blue}
-          />
+        <div className="vd-stats-grid">
+          <div className="vd-stat-card" style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 10,
+            padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0,
+              background: T.blue + '18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name={vehicle.type === 'lorry' ? 'trending' : 'settings'} size={18} color={T.blue} />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <div className="vd-stat-value" style={{ fontSize: 22, fontWeight: 800, color: T.textPrimary, lineHeight: 1,
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {vehicle.type === 'lorry'
+                  ? `${Number(vehicle.totalKm || 0).toLocaleString('en-IN')} km`
+                  : `${Number(vehicle.totalHours || 0).toLocaleString('en-IN')} hrs`}
+              </div>
+              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 3 }}>
+                {vehicle.type === 'lorry' ? 'Total KM' : 'Total Hours'}
+              </div>
+            </div>
+          </div>
           <StatCard
             icon="rupee"
             label="Total Income"
@@ -346,10 +482,10 @@ const VehicleDetail = () => {
         </div>
 
         {/* ── MAIN CONTENT GRID: vehicle info panel + tabs ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 16, alignItems: 'start' }}>
+        <div className="vd-main-grid">
 
           {/* ── LEFT: Vehicle Info Panel ── */}
-          <div style={{ background: T.white, border: `1px solid ${T.border}`,
+          <div className="vd-info-panel" style={{ background: T.white, border: `1px solid ${T.border}`,
             borderRadius: 12, overflow: 'hidden' }}>
 
             {/* Panel header */}
@@ -415,32 +551,32 @@ const VehicleDetail = () => {
           </div>
 
           {/* ── RIGHT: Tabs ── */}
-          <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 12, overflow: 'hidden' }}>
+          <div className="vd-tabs-panel" style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 12, overflow: 'hidden' }}>
 
             {/* Tab bar */}
-            <div style={{ display: 'flex', borderBottom: `1px solid ${T.border}`, background: T.slateLight }}>
+            <div className="vd-tabbar">
               {TABS.map(t => {
                 const active = tab === t.key
                 return (
                   <button
                     key={t.key}
                     onClick={() => setTab(t.key)}
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      gap: 6, padding: '13px 8px', border: 'none', cursor: 'pointer',
-                      fontSize: 12, fontWeight: active ? 700 : 500,
+                    className="vd-tab-btn"
+                    style={{
+                      fontWeight: active ? 700 : 500,
                       background: active ? T.white : 'transparent',
                       color: active ? T.textPrimary : T.textMuted,
                       borderBottom: active ? `2px solid ${T.navy}` : '2px solid transparent',
-                      transition: 'all 0.12s' }}>
+                    }}>
                     <Icon name={t.icon} size={13} color={active ? T.navy : T.textMuted} />
-                    {t.label}
+                    <span className="vd-tab-label">{t.label}</span>
                   </button>
                 )
               })}
             </div>
 
             {/* Tab content */}
-            <div style={{ padding: 20 }}>
+            <div className="vd-tab-content">
               {tab === 'trips'       && <TripTab        vehicleId={id} vehicleType={vehicle.type} month={month} />}
               {tab === 'payments'    && <PaymentTab     vehicleId={id} />}
               {tab === 'summary'     && <SummaryTab     summary={summary} vehicleType={vehicle.type} />}

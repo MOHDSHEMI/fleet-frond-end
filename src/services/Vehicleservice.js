@@ -36,6 +36,17 @@ export const updateTyre   = (tyreId, dto)      => api.patch(`/vehicles/tyres/${t
 export const deleteTyre   = (tyreId)           => api.delete(`/vehicles/tyres/${tyreId}`).then(r => r.data)
 export const replaceTyre  = (id, tyreId, dto)  => api.post(`/vehicles/${id}/tyres/${tyreId}/replace`, dto).then(r => r.data)
 
+
+
+export const getOverallSummary = (month) =>
+  api.get('/vehicles/summary/overall', { params: month ? { month } : {} }).then(r => r.data)
+
+export const getMonthlyTrend = (months = 6) =>
+  api.get('/vehicles/summary/trend', { params: { months } }).then(r => r.data)
+
+
+export const getProfile = () => api.get('/users/me').then(r => r.data)
+
 // ── Documents ─────────────────────────────────────────
 // GET  /vehicles/:id/documents
 export const getDocuments = (id) =>

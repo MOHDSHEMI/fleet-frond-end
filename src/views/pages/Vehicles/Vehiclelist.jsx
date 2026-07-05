@@ -8,36 +8,108 @@ import {
 } from '../../../services/Vehicleservice'
 
 /* ─────────────────────────────────────────────────────────────
-   DESIGN TOKENS
+   DESIGN TOKENS — premium palette, aligned to login page blue
 ───────────────────────────────────────────────────────────── */
 const T = {
-  navy:        '#0f1629',
-  navyMid:     '#1e2a45',
-  navyLight:   '#2d3f5f',
-  blue:        '#2563eb',
-  blueLight:   '#eff6ff',
-  blueMid:     '#bfdbfe',
-  amber:       '#d97706',
-  amberLight:  '#fffbeb',
-  amberMid:    '#fde68a',
-  slate:       '#64748b',
-  slateLight:  '#f8fafc',
-  border:      '#e2e8f0',
-  borderHover: '#cbd5e1',
-  white:       '#ffffff',
-  textPrimary: '#0f172a',
-  textSecond:  '#475569',
-  textMuted:   '#94a3b8',
-  danger:      '#dc2626',
-  dangerLight: '#fef2f2',
-  dangerBorder:'#fecaca',
-  success:     '#16a34a',
-  successLight:'#f0fdf4',
-  warn:        '#ea580c',
-  warnLight:   '#fff7ed',
-  violet:      '#7c3aed',
-  violetLight: '#f5f3ff',
+  navy:        '#0B1220',
+  navyMid:     '#16233D',
+  navyLight:   '#243855',
+  blue:        '#0c2548',
+  blueDeep:    '#1E4278',
+  blueLight:   '#EAF1FB',
+  blueMid:     '#C3D9F2',
+  amber:       '#B8863B',
+  amberLight:  '#FBF3E6',
+  amberMid:    '#E8D2A6',
+  slate:       '#6B7686',
+  slateLight:  '#F7F8FA',
+  border:      '#E4E7EC',
+  borderHover: '#CBD3DE',
+  white:       '#FFFFFF',
+  textPrimary: '#111827',
+  textSecond:  '#4B5768',
+  textMuted:   '#93A0AF',
+  danger:      '#A6423B',
+  dangerLight: '#FBEEED',
+  dangerBorder:'#EFCFC9',
+  success:     '#2F7A5C',
+  successLight:'#EAF6F1',
+  warn:        '#BE6A46',
+  warnLight:   '#FBF1EA',
+  violet:      '#5B4B8A',
+  violetLight: '#F1EDF8',
 }
+
+/* Navy-tinted shadow tokens (used instead of flat black shadows) */
+const SH = {
+  xs: '0 1px 4px rgba(11,18,32,0.05)',
+  sm: '0 4px 16px rgba(11,18,32,0.08)',
+  md: '0 1px 4px rgba(11,18,32,0.16)',
+  lg: '0 24px 70px rgba(11,18,32,0.3)',
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL RESPONSIVE / PREMIUM STYLES
+   (all breakpoints centralized here — components below just
+   carry the classNames these rules target)
+───────────────────────────────────────────────────────────── */
+const GlobalStyle = () => (
+  <style>{`
+    @keyframes spin { to { transform: rotate(360deg) } }
+    @keyframes st-fade-up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+
+    .st-fleet-grid   { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .st-fleet-stats  { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+    .st-toolbar      { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .st-type-filter  { display: flex; gap: 4px; background: ${T.white}; border: 1px solid ${T.border}; border-radius: 8px; padding: 3px; }
+    .st-type-filter button { white-space: nowrap; }
+
+    .st-modal-overlay { position: fixed; inset: 0; background: rgba(11,18,32,0.6); backdrop-filter: blur(3px);
+      z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .st-modal-card { animation: st-fade-up 0.18s ease; }
+    .st-step-bar { display: flex; border-bottom: 1px solid ${T.border}; background: ${T.slateLight}; overflow-x: auto; }
+    .st-step-item { flex: 1; min-width: 64px; }
+
+    /* ── Tablet ── */
+    @media (max-width: 860px) {
+      .st-fleet-header-inner { padding: 0 4px; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .st-fleet-header   { padding: 16px 18px !important; }
+      .st-fleet-body     { padding: 16px !important; }
+      .st-fleet-grid     { grid-template-columns: 1fr !important; }
+      .st-page-title     { font-size: 17px !important; }
+      .st-register-btn   { width: 100%; justify-content: center; }
+      .st-fleet-header-inner { flex-direction: column; align-items: stretch !important; }
+      .st-fleet-header-inner > div:first-child { text-align: left; }
+
+      .st-toolbar { flex-direction: column; align-items: stretch !important; }
+      .st-type-filter { width: 100%; }
+      .st-type-filter button { flex: 1; justify-content: center; }
+
+      .st-form-row { grid-template-columns: 1fr !important; }
+
+      .st-modal-overlay { padding: 0 !important; align-items: flex-end !important; }
+      .st-modal-card   { max-width: 100% !important; width: 100% !important; border-radius: 18px 18px 0 0 !important;
+        max-height: 94vh !important; }
+      .st-modal-title  { padding: 16px 18px !important; }
+      .st-modal-body   { padding: 18px !important; }
+      .st-modal-footer { padding: 12px 18px !important; }
+      .st-step-bar     { padding: 0 10px !important; }
+      .st-step-label   { display: none !important; }
+      .st-step-item    { min-width: 40px; padding: 10px 2px !important; }
+
+      .st-delete-card  { max-width: 100% !important; width: 100% !important; border-radius: 18px 18px 0 0 !important; }
+      .st-delete-overlay { align-items: flex-end !important; padding: 0 !important; }
+    }
+
+    @media (max-width: 380px) {
+      .st-fleet-stats { grid-template-columns: 1fr !important; }
+    }
+  `}</style>
+)
 
 /* ─────────────────────────────────────────────────────────────
    SVG ICONS
@@ -111,7 +183,6 @@ const vehicleToForm = (v) => ({
   permitStartDate:      v.permitStartDate      ?? '',
   permitExpiryDate:     v.permitExpiryDate     ?? '',
   batteryPurchaseDate:  v.batteryPurchaseDate  ?? '',
-  // UpdateDto uses batteryWarrantyExpiryDate; read from either field
   batteryWarrantyDate:  v.batteryWarrantyExpiryDate ?? v.batteryWarrantyDate ?? '',
   tyrePurchaseDate:     v.tyrePurchaseDate     ?? '',
   tyreWarrantyDate:     v.tyreWarrantyExpiryDate ?? v.tyreWarrantyDate ?? '',
@@ -130,8 +201,8 @@ const STEPS = [
 ]
 
 const TYPE_CFG = {
-  lorry:   { label: 'Lorry',   icon: 'truck',     pill: { bg: '#dbeafe', text: '#1d4ed8', border: '#bfdbfe' } },
-  hitachi: { label: 'Hitachi', icon: 'excavator', pill: { bg: '#fef3c7', text: '#b45309', border: '#fde68a' } },
+  lorry:   { label: 'Lorry',   icon: 'truck',     pill: { bg: T.blueLight,  text: T.blue,  border: T.blueMid } },
+  hitachi: { label: 'Hitachi', icon: 'excavator', pill: { bg: T.amberLight, text: '#8A6327', border: T.amberMid } },
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -153,7 +224,7 @@ const ExpiryTag = ({ label, dateStr }) => {
       padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600,
       background: expired ? T.dangerLight : T.warnLight,
       color:      expired ? T.danger      : T.warn,
-      border:     `1px solid ${expired ? T.dangerBorder : '#fed7aa'}`,
+      border:     `1px solid ${expired ? T.dangerBorder : '#EFD9CC'}`,
       letterSpacing: '0.02em',
     }}>
       <span style={{ width: 5, height: 5, borderRadius: '50%',
@@ -175,7 +246,7 @@ const labelSx = {
 const inputBase = {
   width: '100%', boxSizing: 'border-box',
   border: `1px solid ${T.border}`,
-  borderRadius: 8, padding: '9px 12px',
+  borderRadius: 8, padding: '10px 12px',
   fontSize: 14, color: T.textPrimary,
   background: T.white, outline: 'none',
   fontFamily: 'inherit', transition: 'border-color 0.15s, box-shadow 0.15s',
@@ -223,7 +294,7 @@ const Sel = ({ label, required, children, ...props }) => (
       {...props}
       style={{
         ...inputBase, appearance: 'none', cursor: 'pointer', paddingRight: 36,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2393A0AF' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center',
       }}
       onFocus={focusIn} onBlur={focusOut}>
@@ -233,7 +304,7 @@ const Sel = ({ label, required, children, ...props }) => (
 )
 
 const Row = ({ cols = 2, children, gap = 16, style: sx }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap, ...sx }}>
+  <div className="st-form-row" style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap, ...sx }}>
     {children}
   </div>
 )
@@ -255,7 +326,7 @@ const FuelField = () => (
       <Icon name="fuel" size={14} color={T.textMuted} />
       <span style={{ fontSize: 14 }}>Diesel</span>
       <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600,
-        background: '#f1f5f9', color: T.slate, padding: '2px 8px', borderRadius: 4, letterSpacing: '0.04em' }}>
+        background: '#EEF1F4', color: T.slate, padding: '2px 8px', borderRadius: 4, letterSpacing: '0.04em' }}>
         READ ONLY
       </span>
     </div>
@@ -263,22 +334,23 @@ const FuelField = () => (
 )
 
 /* ─────────────────────────────────────────────────────────────
-   STEP BAR  (shared by both modals)
+   STEP BAR  (shared by both modals) — scrolls horizontally,
+   labels hide on mobile so only icons + progress line remain
 ───────────────────────────────────────────────────────────── */
 const StepBar = ({ current, accentColor = T.navy }) => (
-  <div style={{ display: 'flex', padding: '0 28px', borderBottom: `1px solid ${T.border}`, background: T.slateLight }}>
+  <div className="st-step-bar" style={{ padding: '0 28px' }}>
     {STEPS.map((s, i) => {
       const done   = i < current
       const active = i === current
       return (
-        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column',
+        <div key={i} className="st-step-item" style={{ display: 'flex', flexDirection: 'column',
           alignItems: 'center', padding: '14px 4px', position: 'relative',
           borderBottom: active ? `2px solid ${T.blue}` : '2px solid transparent' }}>
           {i < STEPS.length - 1 && (
             <div style={{ position: 'absolute', top: 23, left: '60%', width: '80%', height: 1,
               background: done ? T.blue : T.border }} />
           )}
-          <div style={{ width: 26, height: 26, borderRadius: '50%', zIndex: 1,
+          <div style={{ width: 26, height: 26, borderRadius: '50%', zIndex: 1, flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: done ? T.blue : active ? accentColor : T.white,
             border: `1.5px solid ${done || active ? 'transparent' : T.border}`,
@@ -288,7 +360,7 @@ const StepBar = ({ current, accentColor = T.navy }) => (
               : <Icon name={s.icon} size={12} color={active ? '#fff' : T.textMuted} />
             }
           </div>
-          <span style={{ fontSize: 10, marginTop: 5, fontWeight: active ? 700 : 500,
+          <span className="st-step-label" style={{ fontSize: 10, marginTop: 5, fontWeight: active ? 700 : 500,
             color: active ? accentColor : done ? T.blue : T.textMuted, whiteSpace: 'nowrap' }}>
             {s.label}
           </span>
@@ -368,11 +440,6 @@ const StepContent = ({ step, form, set, isEdit = false }) => {
           <Inp label="Battery Purchase Date"   type="date" value={form.batteryPurchaseDate} onChange={set('batteryPurchaseDate')} />
           <Inp label="Battery Warranty Expiry" type="date" value={form.batteryWarrantyDate} onChange={set('batteryWarrantyDate')} />
         </Row>
-        {/* <Divider icon="tyre" label="Tyres" />
-        <Row cols={2}>
-          <Inp label="Tyre Purchase Date"   type="date" value={form.tyrePurchaseDate} onChange={set('tyrePurchaseDate')} />
-          <Inp label="Tyre Warranty Expiry" type="date" value={form.tyreWarrantyDate} onChange={set('tyreWarrantyDate')} />
-        </Row> */}
       </>
     )
     case 5: return (
@@ -392,6 +459,7 @@ const StepContent = ({ step, form, set, isEdit = false }) => {
 
 /* ─────────────────────────────────────────────────────────────
    MODAL SHELL  (shared by Create + Edit)
+   Desktop: centered card. Mobile: bottom sheet, full width.
 ───────────────────────────────────────────────────────────── */
 const VehicleModal = ({
   visible, onClose, title, subtitle,
@@ -403,27 +471,27 @@ const VehicleModal = ({
 
   return (
     <div
-      style={{ position: 'fixed', inset: 0, background: 'rgba(15,22,41,0.55)',
-        zIndex: 1050, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+      className="st-modal-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ background: T.white, borderRadius: 14, width: '100%', maxWidth: 660,
+      <div className="st-modal-card" style={{ background: T.white, borderRadius: 16, width: '100%', maxWidth: 660,
         maxHeight: '90vh', display: 'flex', flexDirection: 'column',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.2)', border: `1px solid ${T.border}` }}>
+        boxShadow: SH.lg, border: `1px solid ${T.border}` }}>
 
         {/* Title bar */}
-        <div style={{ padding: '20px 28px', display: 'flex', justifyContent: 'space-between',
-          alignItems: 'center', borderBottom: `1px solid ${T.border}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="st-modal-title" style={{ padding: '20px 28px', display: 'flex', justifyContent: 'space-between',
+          alignItems: 'center', borderBottom: `1px solid ${T.border}`, gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
             <div style={{ width: 34, height: 34, borderRadius: 8, background: isEdit ? T.violetLight : T.slateLight,
-              display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Icon name={isEdit ? 'edit' : 'plus'} size={16} color={accentColor} />
             </div>
-            <div>
-              <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: T.textPrimary }}>{title}</h2>
+            <div style={{ minWidth: 0 }}>
+              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: T.textPrimary,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</h2>
               <p style={{ margin: '2px 0 0', fontSize: 12, color: T.textMuted }}>{subtitle}</p>
             </div>
           </div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 6,
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 6, flexShrink: 0,
             border: `1px solid ${T.border}`, background: T.slateLight,
             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="close" size={14} color={T.textSecond} />
@@ -433,18 +501,18 @@ const VehicleModal = ({
         <StepBar current={step} accentColor={accentColor} />
 
         {/* Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
+        <div className="st-modal-body" style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
           <StepContent step={step} form={form} set={set} isEdit={isEdit} />
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '16px 28px', borderTop: `1px solid ${T.border}`,
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          background: T.slateLight, borderRadius: '0 0 14px 14px' }}>
+        <div className="st-modal-footer" style={{ padding: '16px 28px', borderTop: `1px solid ${T.border}`,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10,
+          background: T.slateLight, borderRadius: '0 0 16px 16px' }}>
           <button
             onClick={() => step > 0 ? setStep(s => s - 1) : onClose()}
-            style={{ padding: '8px 18px', borderRadius: 7, border: `1px solid ${T.border}`,
-              background: T.white, color: T.textSecond, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ padding: '8px 16px', borderRadius: 7, border: `1px solid ${T.border}`,
+              background: T.white, color: T.textSecond, fontSize: 13, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
             {step === 0 ? 'Cancel' : '← Back'}
           </button>
 
@@ -461,20 +529,20 @@ const VehicleModal = ({
             <button
               onClick={() => setStep(s => s + 1)}
               disabled={step === 0 && !canNext0}
-              style={{ padding: '8px 20px', borderRadius: 7, border: 'none',
+              style={{ padding: '8px 18px', borderRadius: 7, border: 'none', flexShrink: 0,
                 background: step === 0 && !canNext0 ? T.border : accentColor,
                 color:      step === 0 && !canNext0 ? T.textMuted : T.white,
                 fontSize: 13, fontWeight: 700,
                 cursor: step === 0 && !canNext0 ? 'not-allowed' : 'pointer',
                 transition: 'background 0.15s' }}>
-              Continue →
+              Next →
             </button>
           ) : (
             <button
               onClick={onSubmit}
               disabled={saving || !canNext0}
-              style={{ display: 'flex', alignItems: 'center', gap: 8,
-                padding: '8px 20px', borderRadius: 7, border: 'none',
+              style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
+                padding: '8px 18px', borderRadius: 7, border: 'none',
                 background: saving ? T.navyLight : accentColor,
                 color: T.white, fontSize: 13, fontWeight: 700,
                 cursor: saving ? 'default' : 'pointer' }}>
@@ -488,7 +556,7 @@ const VehicleModal = ({
               ) : (
                 <>
                   <Icon name="check" size={14} color="#fff" />
-                  {isEdit ? 'Save Changes' : 'Register Vehicle'}
+                  {isEdit ? 'Save' : 'Register'}
                 </>
               )}
             </button>
@@ -504,12 +572,12 @@ const VehicleModal = ({
 ───────────────────────────────────────────────────────────── */
 const StatCard = ({ icon, label, value, sub, accent }) => (
   <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 10,
-    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: SH.xs }}>
     <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0,
       background: accent + '18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Icon name={icon} size={18} color={accent} />
     </div>
-    <div>
+    <div style={{ minWidth: 0 }}>
       <div style={{ fontSize: 22, fontWeight: 800, color: T.textPrimary, lineHeight: 1 }}>{value}</div>
       <div style={{ fontSize: 12, color: T.textMuted, marginTop: 3 }}>{label}</div>
       {sub && <div style={{ fontSize: 11, color: T.textSecond, marginTop: 1 }}>{sub}</div>}
@@ -529,7 +597,6 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
     { label: 'Tax',       d: v.taxExpiryDate },
     { label: 'Permit',    d: v.permitExpiryDate },
     { label: 'Battery',   d: v.batteryWarrantyExpiryDate ?? v.batteryWarrantyDate },
-    // { label: 'Tyre',      d: v.tyreWarrantyExpiryDate    ?? v.tyreWarrantyDate },
   ].filter(a => { const days = daysUntil(a.d); return days !== null && days <= 30 })
 
   return (
@@ -538,27 +605,28 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
       onMouseLeave={() => setHov(false)}
       style={{ background: T.white, border: `1px solid ${hov ? T.borderHover : T.border}`,
         borderRadius: 12, overflow: 'hidden',
-        boxShadow: hov ? '0 4px 16px rgba(0,0,0,0.08)' : '0 1px 4px rgba(0,0,0,0.04)',
+        boxShadow: hov ? SH.sm : SH.xs,
         transition: 'box-shadow 0.15s, border-color 0.15s, transform 0.15s',
         transform: hov ? 'translateY(-2px)' : 'none' }}>
 
       {/* Card header */}
       <div style={{ padding: '14px 18px', borderBottom: `1px solid ${T.border}`,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8,
         cursor: 'pointer' }} onClick={onView}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, minWidth: 0 }}>
           <div style={{ width: 38, height: 38, borderRadius: 8, flexShrink: 0,
             background: cfg.pill.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name={cfg.icon} size={18} color={cfg.pill.text} />
           </div>
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>{v.name}</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary, overflow: 'hidden',
+              textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.name}</div>
             <div style={{ fontSize: 12, color: T.textMuted, fontFamily: 'monospace', marginTop: 1 }}>
               {v.registrationNumber}
             </div>
           </div>
         </div>
-        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20,
+        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, flexShrink: 0,
           background: cfg.pill.bg, color: cfg.pill.text, border: `1px solid ${cfg.pill.border}`,
           letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
           {cfg.label}
@@ -572,13 +640,13 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
             padding: '7px 10px', background: T.slateLight, borderRadius: 6 }}>
             <Icon name="user" size={13} color={T.slate} />
-            <span style={{ fontSize: 13, color: T.textSecond }}>{v.driverName}</span>
-            <span style={{ marginLeft: 'auto', fontSize: 11, color: T.textMuted, fontStyle: 'italic' }}>Driver</span>
+            <span style={{ fontSize: 13, color: T.textSecond, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.driverName}</span>
+            <span style={{ marginLeft: 'auto', fontSize: 11, color: T.textMuted, fontStyle: 'italic', flexShrink: 0 }}>Driver</span>
           </div>
         )}
 
         {/* Metric row */}
-        <div style={{ display: 'flex', gap: 20, marginBottom: 12 }}>
+        <div style={{ display: 'flex', gap: 20, marginBottom: 12, flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, color: T.textMuted,
               textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>
@@ -614,7 +682,7 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
           <button
             onClick={onView}
             style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              padding: '7px 0', borderRadius: 7, border: `1px solid ${T.border}`,
+              padding: '8px 0', borderRadius: 7, border: `1px solid ${T.border}`,
               background: T.white, color: T.textSecond, fontSize: 12, fontWeight: 600,
               cursor: 'pointer', transition: 'all 0.12s' }}
             onMouseEnter={e => { e.currentTarget.style.background = T.slateLight; e.currentTarget.style.borderColor = T.blue; e.currentTarget.style.color = T.blue }}
@@ -624,7 +692,7 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
           <button
             onClick={onEdit}
             style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              padding: '7px 0', borderRadius: 7, border: `1px solid ${T.border}`,
+              padding: '8px 0', borderRadius: 7, border: `1px solid ${T.border}`,
               background: T.white, color: T.textSecond, fontSize: 12, fontWeight: 600,
               cursor: 'pointer', transition: 'all 0.12s' }}
             onMouseEnter={e => { e.currentTarget.style.background = T.violetLight; e.currentTarget.style.borderColor = T.violet; e.currentTarget.style.color = T.violet }}
@@ -633,7 +701,7 @@ const VehicleCard = ({ v, onView, onEdit, onDelete }) => {
           </button>
           <button
             onClick={onDelete}
-            style={{ width: 34, height: 34, borderRadius: 7,
+            style={{ width: 36, height: 36, borderRadius: 7, flexShrink: 0,
               border: `1px solid ${T.dangerBorder}`, background: T.white, color: T.danger,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.12s' }}
@@ -659,28 +727,23 @@ const VehicleList = () => {
   const [search,    setSearch]    = useState('')
   const [filter,    setFilter]    = useState('all')
 
-  // Create modal
   const [addModal,  setAddModal]  = useState(false)
   const [addForm,   setAddForm]   = useState(EMPTY_FORM)
   const [addStep,   setAddStep]   = useState(0)
   const [addSaving, setAddSaving] = useState(false)
 
-  // Edit modal
   const [editModal,  setEditModal]  = useState(false)
-  const [editTarget, setEditTarget] = useState(null)   // vehicle being edited
+  const [editTarget, setEditTarget] = useState(null)
   const [editForm,   setEditForm]   = useState(EMPTY_FORM)
   const [editStep,   setEditStep]   = useState(0)
   const [editSaving, setEditSaving] = useState(false)
 
-  // Delete modal
   const [delModal,  setDelModal]  = useState(false)
   const [delTarget, setDelTarget] = useState(null)
 
-  /* onChange factory */
   const setAdd  = (field) => (e) => setAddForm(f  => ({ ...f,  [field]: e.target.value }))
   const setEdit = (field) => (e) => setEditForm(f => ({ ...f, [field]: e.target.value }))
 
-  /* ── Load ── */
   const load = async () => {
     try { setLoading(true); setError(''); setVehicles(await getVehicles()) }
     catch { setError('Failed to load vehicles. Please try again.') }
@@ -688,7 +751,6 @@ const VehicleList = () => {
   }
   useEffect(() => { load() }, [])
 
-  /* ── Create ── */
   const openAdd = () => { setAddForm(EMPTY_FORM); setAddStep(0); setAddModal(true) }
   const handleAdd = async () => {
     setAddSaving(true)
@@ -721,7 +783,6 @@ const VehicleList = () => {
     finally { setAddSaving(false) }
   }
 
-  /* ── Edit ── */
   const openEdit = (v) => {
     setEditTarget(v)
     setEditForm(vehicleToForm(v))
@@ -747,7 +808,6 @@ const VehicleList = () => {
         permitStartDate:            editForm.permitStartDate  || undefined,
         permitExpiryDate:           editForm.permitExpiryDate || undefined,
         batteryPurchaseDate:        editForm.batteryPurchaseDate || undefined,
-        // UpdateDto field name differs from CreateDto
         batteryWarrantyExpiryDate:  editForm.batteryWarrantyDate || undefined,
         tyrePurchaseDate:           editForm.tyrePurchaseDate || undefined,
         tyreWarrantyExpiryDate:     editForm.tyreWarrantyDate || undefined,
@@ -760,13 +820,11 @@ const VehicleList = () => {
     finally { setEditSaving(false) }
   }
 
-  /* ── Delete ── */
   const handleDelete = async () => {
     try { await deleteVehicle(delTarget.id); setDelModal(false); setDelTarget(null); load() }
     catch { setError('Failed to delete vehicle. Please try again.') }
   }
 
-  /* ── Derived ── */
   const canNextAdd  = addForm.name.trim()  && addForm.registrationNumber.trim()
   const canNextEdit = editForm.name.trim() && editForm.registrationNumber.trim()
 
@@ -781,46 +839,48 @@ const VehicleList = () => {
       const days = daysUntil(d); return days !== null && days <= 30
     })).length
 
-  /* ── Render ── */
   return (
-    <div style={{ minHeight: '100vh', background: '#f1f5f9',
+    <div style={{ minHeight: '100vh', background: '#F4F6F9',
       fontFamily: "'Geist', 'DM Sans', system-ui, sans-serif" }}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <GlobalStyle />
 
       {/* ── PAGE HEADER ── */}
-      <div style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: '20px 28px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="st-fleet-header" style={{
+        background: `linear-gradient(135deg, ${T.navy} 0%, #101B33 100%)`,
+        borderBottom: `2px solid ${T.blueDeep}`, padding: '20px 28px' }}>
+        <div className="st-fleet-header-inner" style={{ maxWidth: 1280, margin: '0 auto',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 14 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: T.navy,
-                display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8,
+                background: `linear-gradient(135deg, ${T.blue}, ${T.blueDeep})`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Icon name="truck" size={16} color="#fff" />
               </div>
-              <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800,
-                color: T.textPrimary, letterSpacing: '-0.02em' }}>
+              <h1 className="st-page-title" style={{ margin: 0, fontSize: 20, fontWeight: 800,
+                color: T.white, letterSpacing: '-0.02em' }}>
                 Fleet Management
               </h1>
             </div>
-            <p style={{ margin: '3px 0 0 42px', fontSize: 13, color: T.textMuted }}>
+            <p style={{ margin: '3px 0 0 42px', fontSize: 13, color: '#8B96A8' }}>
               {vehicles.length} vehicle{vehicles.length !== 1 ? 's' : ''} registered
             </p>
           </div>
-          <button onClick={openAdd} style={{
+          <button className="st-register-btn" onClick={openAdd} style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '9px 18px', borderRadius: 8, border: 'none',
-            background: T.navy, color: T.white,
+            padding: '10px 18px', borderRadius: 8, border: 'none',
+            background: T.blue, color: T.white,
             fontSize: 14, fontWeight: 700, cursor: 'pointer',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.15)', transition: 'background 0.15s' }}
-            onMouseEnter={e => e.currentTarget.style.background = T.navyMid}
-            onMouseLeave={e => e.currentTarget.style.background = T.navy}>
+            boxShadow: SH.md, transition: 'background 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.background = T.blueDeep}
+            onMouseLeave={e => e.currentTarget.style.background = T.blue}>
             <Icon name="plus" size={16} color="#fff" />
             Register Vehicle
           </button>
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: 28 }}>
+      <div className="st-fleet-body" style={{ maxWidth: 1280, margin: '0 auto', padding: 28 }}>
 
         {/* ── ERROR BANNER ── */}
         {error && (
@@ -837,7 +897,7 @@ const VehicleList = () => {
         )}
 
         {/* ── STAT ROW ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 24 }}>
+        <div className="st-fleet-stats" style={{ marginBottom: 24 }}>
           <StatCard icon="truck"     label="Total Lorries"       value={vehicles.filter(v => v.type === 'lorry').length}   accent={T.blue} />
           <StatCard icon="excavator" label="Total Hitachi"       value={vehicles.filter(v => v.type === 'hitachi').length} accent={T.amber} />
           <StatCard icon="alert"     label="Documents Expiring"  value={expiring}
@@ -846,7 +906,7 @@ const VehicleList = () => {
         </div>
 
         {/* ── TOOLBAR ── */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="st-toolbar" style={{ marginBottom: 20 }}>
           <div style={{ position: 'relative', flex: '1 1 220px' }}>
             <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)' }}>
               <Icon name="search" size={14} color={T.textMuted} />
@@ -856,12 +916,11 @@ const VehicleList = () => {
               style={{ ...inputBase, paddingLeft: 34, fontSize: 13 }}
               onFocus={focusIn} onBlur={focusOut} />
           </div>
-          <div style={{ display: 'flex', gap: 4, background: T.white,
-            border: `1px solid ${T.border}`, borderRadius: 8, padding: 3 }}>
+          <div className="st-type-filter">
             {[['all','All','car'],['lorry','Lorry','truck'],['hitachi','Hitachi','excavator']].map(([val, lbl, ico]) => (
               <button key={val} onClick={() => setFilter(val)} style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                padding: '7px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
                 fontSize: 13, fontWeight: 600,
                 background: filter === val ? T.navy : 'transparent',
                 color:      filter === val ? T.white : T.textSecond,
@@ -894,7 +953,7 @@ const VehicleList = () => {
             </p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
+          <div className="st-fleet-grid">
             {displayed.map(v => (
               <VehicleCard key={v.id} v={v}
                 onView={() => navigate(`/vehicles/${v.id}`)}
@@ -935,10 +994,9 @@ const VehicleList = () => {
 
       {/* ══ DELETE CONFIRM MODAL ══ */}
       {delModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,22,41,0.55)',
-          zIndex: 1050, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: T.white, borderRadius: 14, width: '100%', maxWidth: 400,
-            padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', border: `1px solid ${T.border}` }}>
+        <div className="st-modal-overlay st-delete-overlay">
+          <div className="st-modal-card st-delete-card" style={{ background: T.white, borderRadius: 16, width: '100%', maxWidth: 400,
+            padding: 28, boxShadow: SH.lg, border: `1px solid ${T.border}` }}>
             <div style={{ width: 44, height: 44, borderRadius: 10, background: T.dangerLight,
               display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
               <Icon name="trash" size={20} color={T.danger} />
@@ -956,13 +1014,13 @@ const VehicleList = () => {
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setDelModal(false)}
-                style={{ flex: 1, padding: '9px 0', borderRadius: 7,
+                style={{ flex: 1, padding: '10px 0', borderRadius: 7,
                   border: `1px solid ${T.border}`, background: T.white,
                   color: T.textSecond, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
                 Cancel
               </button>
               <button onClick={handleDelete}
-                style={{ flex: 1, padding: '9px 0', borderRadius: 7, border: 'none',
+                style={{ flex: 1, padding: '10px 0', borderRadius: 7, border: 'none',
                   background: T.danger, color: T.white, fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
                 Delete Permanently
               </button>
@@ -975,3 +1033,4 @@ const VehicleList = () => {
 }
 
 export default VehicleList
+

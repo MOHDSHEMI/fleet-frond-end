@@ -27,6 +27,7 @@ $st-slate: #6b7486;
   display: flex;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: $st-ivory;
+  color-scheme: light; // tells the browser this whole component is light-mode only
 
   // ---------- Brand panel ----------
 
@@ -154,6 +155,7 @@ $st-slate: #6b7486;
     align-items: center;
     justify-content: center;
     padding: 2.5rem 1.5rem;
+    background: $st-ivory;
   }
 
   &__form-card {
@@ -165,13 +167,13 @@ $st-slate: #6b7486;
     h1 {
       font-size: 1.75rem;
       font-weight: 700;
-      color: $st-ink;
+      color: $st-ink !important;
       margin-bottom: 0.35rem;
       letter-spacing: -0.01em;
     }
 
     p {
-      color: $st-slate;
+      color: $st-slate !important;
       margin-bottom: 2rem;
       font-size: 0.95rem;
     }
@@ -197,18 +199,18 @@ $st-slate: #6b7486;
     display: block;
     font-size: 0.82rem;
     font-weight: 600;
-    color: $st-ink;
+    color: $st-ink !important;
     margin-bottom: 0.45rem;
   }
 
   &__forgot {
     font-size: 0.8rem;
-    color: $st-navy-700;
+    color: $st-navy-700 !important;
     padding: 0;
     text-decoration: none;
 
     &:hover {
-      color: $st-gold-500;
+      color: $st-gold-500 !important;
       text-decoration: underline;
     }
   }
@@ -224,9 +226,15 @@ $st-slate: #6b7486;
     left: 0.9rem;
     width: 17px;
     height: 17px;
-    color: $st-slate;
+    color: $st-slate !important;
     pointer-events: none;
   }
+
+  // ---------- Inputs: hard-locked to light mode ----------
+  // These !important overrides stop the OS/browser "prefers-color-scheme: dark"
+  // (and CoreUI's own dark theme classes) from swapping in dark backgrounds /
+  // light text. Everything here is pinned to the same colors regardless of
+  // the user's system theme.
 
   &__input {
     padding: 0.65rem 0.9rem 0.65rem 2.5rem !important;
@@ -234,7 +242,11 @@ $st-slate: #6b7486;
     border-radius: 8px !important;
     font-size: 0.94rem;
     background-color: #fff !important;
+    color: $st-ink !important;
+    -webkit-text-fill-color: $st-ink !important; // Safari/iOS ignores plain `color` on inputs sometimes
+    color-scheme: light; // stops native form-control dark styling (scrollbars, autofill bg, etc.)
     box-shadow: none !important;
+    caret-color: $st-ink !important;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
     &--password {
@@ -244,6 +256,35 @@ $st-slate: #6b7486;
     &:focus {
       border-color: $st-gold-500 !important;
       box-shadow: 0 0 0 3px rgba($st-gold-500, 0.18) !important;
+      background-color: #fff !important;
+      color: $st-ink !important;
+      -webkit-text-fill-color: $st-ink !important;
+    }
+
+    &::placeholder {
+      color: $st-slate !important;
+      opacity: 1 !important; // Firefox lowers opacity on placeholders by default
+    }
+
+    &:disabled {
+      background-color: #f2f3f5 !important;
+      color: $st-slate !important;
+      -webkit-text-fill-color: $st-slate !important;
+      opacity: 1 !important;
+    }
+
+    // Chrome/Edge/Safari autofill: browsers repaint autofilled fields with
+    // their own (often dark-mode-aware) yellow/gray background + text color.
+    // This forces it back to white bg + ink text no matter the theme.
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: $st-ink !important;
+      caret-color: $st-ink !important;
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+      transition: background-color 9999s ease-in-out 0s; // stalls the browser's own bg transition
     }
   }
 
@@ -254,7 +295,7 @@ $st-slate: #6b7486;
     height: 18px;
     border: none;
     background: transparent;
-    color: $st-slate;
+    color: $st-slate !important;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -262,7 +303,7 @@ $st-slate: #6b7486;
     padding: 0;
 
     &:hover {
-      color: $st-navy-700;
+      color: $st-navy-700 !important;
     }
   }
 
@@ -294,7 +335,7 @@ $st-slate: #6b7486;
   &__footer-note {
     text-align: center;
     font-size: 0.82rem;
-    color: $st-slate;
+    color: $st-slate !important;
     margin-top: 1.75rem;
   }
 

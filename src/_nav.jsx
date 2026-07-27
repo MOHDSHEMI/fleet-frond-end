@@ -604,7 +604,7 @@ const _nav = [
     {
     component: CNavItem,
     name: 'Trips',
-    to: '/trips',
+    to: '/all-trips',
     icon: <CIcon icon={cilPaperPlane} customClassName="nav-icon" />,
   },
 

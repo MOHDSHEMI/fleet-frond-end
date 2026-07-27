@@ -75,6 +75,7 @@ const Settings = React.lazy(() => import('./views/pages/settings/settings'));
 const VehicleList = React.lazy(() => import('./views/pages/Vehicles/Vehiclelist'));
 const VehicleDetail = React.lazy(() => import('./views/pages/Vehicles/Vehicledetail'));
 const PartiesList = React.lazy(() => import('./views/pages/Parties/PartiesList'));
+const AllTrips = React.lazy(() => import('./views/pages/Trips/AllTrips'));
 
 const Profile = React.lazy(() => import('./views/Profile/Profile'));
 
@@ -148,6 +149,8 @@ export const routes = [
   { path: '/vehicles/:id', name: 'Vehicle Details', element: VehicleDetail },
   { path: '/parties', name: 'Parties', element: PartiesList },
   { path: '/profile', name: 'Profile', element: Profile },
+  { path: '/all-trips', name: 'All Trips', element: AllTrips },
+
 
 
 

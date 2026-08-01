@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://fleet-back-end.onrender.com',
+  baseURL: 'http://localhost:3000',
+  //  baseURL: 'https://fleet-back-end.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },

@@ -106,3 +106,7 @@ export function uploadDocument(vehicleId, file, category, label, onProgress) {
     xhr.send(formData)
   })
 }
+
+// ── All Trips (cross-vehicle) ─────────────────────────
+export const getAllTrips = (filters = {}) =>
+  api.get('/vehicles/trips/all', { params: filters }).then(r => r.data)

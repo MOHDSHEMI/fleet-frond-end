@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getTrips, addTrip, deleteTrip,updateTrip } from '../../../services/Vehicleservice'
+import { getTrips, addTrip, deleteTrip, updateTrip } from '../../../services/Vehicleservice'
 import { PartyIcon } from '../Parties/PartiesModal'
 import { getParties } from '../../../services/Parties.Service'
 import ExcelJS from 'exceljs'
@@ -76,12 +76,14 @@ const fmt = (n) =>
   n != null ? `₹${Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : '—'
 
 const EMPTY_LORRY = {
-  tripDate: '', slipNo: '', leadKm: '', uChainage: '',
-  kmDriven: '', rentPerKm: '', otherExpense: '', notes: '', partyId: '',site:'',
+  tripDate: '', slipNo: '', leadKm: '',
+  rateType: 'km', kmDriven: '', rentPerKm: '',
+  tonnage: '', rentPerTonnage: '',
+  otherExpense: '', notes: '', partyId: '', site: '',
 }
 const EMPTY_HITACHI = {
   tripDate: '', workType: 'bucket', startingHours: '',
-  closingHours: '', income: '', bata: '1500', diesel: '', notes: '', partyId: '',site:'',
+  closingHours: '', income: '', bata: '1500', diesel: '', notes: '', partyId: '', site: '',
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -242,7 +244,7 @@ const TripTab = ({ vehicleId, vehicleType, month }) => {
   const [delId, setDelId] = useState(null)
   const [parties, setParties] = useState([])
   const [form, setForm] = useState(vehicleType === 'lorry' ? EMPTY_LORRY : EMPTY_HITACHI)
-  const [editId, setEditId] = useState(null) 
+  const [editId, setEditId] = useState(null)
 
   const isLorry = vehicleType === 'lorry'
 
@@ -262,149 +264,155 @@ const TripTab = ({ vehicleId, vehicleType, month }) => {
     onChange: e => setForm(prev => ({ ...prev, [k]: e.target.value })),
   })
 
-const openEdit = (t) => {
-  setEditId(t.id)
-  if (isLorry) {
-    setForm({
-      tripDate: t.tripDate?.slice(0, 10) || '',
-      slipNo: t.slipNo || '',
-      leadKm: t.leadKm ?? '',
-      uChainage: t.uChainage ?? '',
-      kmDriven: t.kmDriven ?? '',
-      rentPerKm: t.rentPerKm ?? '',
-      otherExpense: t.otherExpense ?? '',
-      notes: t.notes || '',
-      partyId: t.partyId || t.party?.id || '',
-      site: t.site || '',
-    })
-  } else {
-    setForm({
-      tripDate: t.tripDate?.slice(0, 10) || '',
-      workType: t.workType || 'bucket',
-      startingHours: t.startingHours ?? '',
-      closingHours: t.closingHours ?? '',
-      income: t.income ?? '',
-      bata: t.bata ?? '',
-      diesel: t.diesel ?? '',
-      notes: t.notes || '',
-      partyId: t.partyId || t.party?.id || '',
-      site: t.site || '',
-    })
-  }
-  setModal(true)
-}
-
-const handleSave = async () => {
-  setSaving(true)
-  try {
-    const payload = {}
-    Object.entries(form).forEach(([k, v]) => {
-      if (v !== '')
-        payload[k] = isNaN(v) || (typeof v === 'string' && v.includes('-')) ? v : Number(v)
-    })
-    if (editId) {
-      await updateTrip(editId, payload)
+  const openEdit = (t) => {
+    setEditId(t.id)
+    if (isLorry) {
+      setForm({
+        tripDate: t.tripDate?.slice(0, 10) || '',
+        slipNo: t.slipNo || '',
+        leadKm: t.leadKm ?? '',
+        rateType: t.rateType || (t.tonnage ? 'tonnage' : 'km'),
+        kmDriven: t.kmDriven ?? '',
+        rentPerKm: t.rentPerKm ?? '',
+        tonnage: t.tonnage ?? '',
+        rentPerTonnage: t.rentPerTonnage ?? '',
+        otherExpense: t.otherExpense ?? '',
+        notes: t.notes || '',
+        partyId: t.partyId || t.party?.id || '',
+        site: t.site || '',
+      })
     } else {
-      await addTrip(vehicleId, payload)
+      setForm({
+        tripDate: t.tripDate?.slice(0, 10) || '',
+        workType: t.workType || 'bucket',
+        startingHours: t.startingHours ?? '',
+        closingHours: t.closingHours ?? '',
+        income: t.income ?? '',
+        bata: t.bata ?? '',
+        diesel: t.diesel ?? '',
+        notes: t.notes || '',
+        partyId: t.partyId || t.party?.id || '',
+        site: t.site || '',
+      })
     }
-    setModal(false)
-    setEditId(null)
-    setForm(isLorry ? EMPTY_LORRY : EMPTY_HITACHI)
-    load()
-  } catch (e) {
-    setError(e.response?.data?.message || `Failed to ${editId ? 'update' : 'add'} trip.`)
-  } finally { setSaving(false) }
-}
+    setModal(true)
+  }
 
-const handleExport = async () => {
-  console.log("clciked");
-  
-  if (!trips.length) return
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const payload = {}
+      Object.entries(form).forEach(([k, v]) => {
+        if (v !== '')
+          payload[k] = isNaN(v) || (typeof v === 'string' && v.includes('-')) ? v : Number(v)
+      })
+      if (editId) {
+        await updateTrip(editId, payload)
+      } else {
+        await addTrip(vehicleId, payload)
+      }
+      setModal(false)
+      setEditId(null)
+      setForm(isLorry ? EMPTY_LORRY : EMPTY_HITACHI)
+      load()
+    } catch (e) {
+      setError(e.response?.data?.message || `Failed to ${editId ? 'update' : 'add'} trip.`)
+    } finally { setSaving(false) }
+  }
 
-  const wb = new ExcelJS.Workbook()
-  const ws = wb.addWorksheet(isLorry ? 'Lorry Trips' : 'Hitachi Trips')
+  const handleExport = async () => {
+    console.log("clciked");
 
-  const columns = isLorry
-    ? ['DATE', 'PARTY', 'SITE', 'SLIP NO', 'LEAD KM', 'U CHAINAGE', 'KM', 'RATE/KM', 'RENT', 'OTHER EXP', 'NOTES']
-    : ['DATE', 'PARTY', 'SITE', 'WORK TYPE', 'START HR', 'CLOSE HR', 'HOURS', 'INCOME', 'BATA', 'DIESEL', 'NOTES']
+    if (!trips.length) return
 
-  // Title row — driver / vehicle label, bold + centered, merged across all columns
-  ws.mergeCells(1, 1, 1, columns.length)
-  const titleCell = ws.getCell(1, 1)
-  titleCell.value = `TRIP REGISTER — ${isLorry ? 'LORRY' : 'HITACHI'}`
-  titleCell.font = { bold: true, size: 12 }
-  titleCell.alignment = { horizontal: 'center' }
+    const wb = new ExcelJS.Workbook()
+    const ws = wb.addWorksheet(isLorry ? 'Lorry Trips' : 'Hitachi Trips')
 
-  // Header row
-  const headerRow = ws.addRow(columns)
-  headerRow.eachCell(c => {
-    c.font = { bold: true }
-    c.alignment = { horizontal: 'center' }
-  })
+    const columns = isLorry
+      ? ['DATE', 'PARTY', 'SITE', 'SLIP NO', 'LEAD KM', 'BASIS', 'QTY', 'RATE', 'RENT', 'OTHER EXP', 'NOTES']
+      : ['DATE', 'PARTY', 'SITE', 'WORK TYPE', 'START HR', 'CLOSE HR', 'HOURS', 'INCOME', 'BATA', 'DIESEL', 'NOTES']
 
-  const moneyFmt = '_ * #,##0.00_ ;_ * -#,##0.00_ ;_ * "-"??_ ;_ @_ '
-  const startDataRow = 3
+    // Title row — driver / vehicle label, bold + centered, merged across all columns
+    ws.mergeCells(1, 1, 1, columns.length)
+    const titleCell = ws.getCell(1, 1)
+    titleCell.value = `TRIP REGISTER — ${isLorry ? 'LORRY' : 'HITACHI'}`
+    titleCell.font = { bold: true, size: 12 }
+    titleCell.alignment = { horizontal: 'center' }
 
-  trips.forEach(t => {
-    const row = isLorry
-      ? [
+    // Header row
+    const headerRow = ws.addRow(columns)
+    headerRow.eachCell(c => {
+      c.font = { bold: true }
+      c.alignment = { horizontal: 'center' }
+    })
+
+    const moneyFmt = '_ * #,##0.00_ ;_ * -#,##0.00_ ;_ * "-"??_ ;_ @_ '
+    const startDataRow = 3
+
+    trips.forEach(t => {
+      const row = isLorry
+        ? [
           new Date(t.tripDate), t.party?.name || '', t.site || '', t.slipNo || '',
-          t.leadKm ?? '', t.uChainage ?? '', t.kmDriven ?? '', t.rentPerKm ?? '',
-          t.income ?? (t.kmDriven && t.rentPerKm ? Number(t.kmDriven) * Number(t.rentPerKm) : ''),
+          t.leadKm ?? '', t.rateType === 'tonnage' ? 'Tonnage' : 'KM',
+          (t.rateType === 'tonnage' ? t.tonnage : t.kmDriven) ?? '',
+          (t.rateType === 'tonnage' ? t.rentPerTonnage : t.rentPerKm) ?? '',
+          t.income ?? (t.rateType === 'tonnage'
+            ? (t.tonnage && t.rentPerTonnage ? Number(t.tonnage) * Number(t.rentPerTonnage) : '')
+            : (t.kmDriven && t.rentPerKm ? Number(t.kmDriven) * Number(t.rentPerKm) : '')),
           t.otherExpense ?? '', t.notes || '',
         ]
-      : [
+        : [
           new Date(t.tripDate), t.party?.name || '', t.site || '', t.workType || '',
           t.startingHours ?? '', t.closingHours ?? '', t.hoursWorked ?? '',
           t.income ?? '', t.bata ?? '', t.diesel ?? '', t.notes || '',
         ]
-    const r = ws.addRow(row)
-    r.getCell(1).numFmt = 'mm-dd-yy'
-    const moneyCols = isLorry ? [9, 10] : [8, 9, 10]
-    moneyCols.forEach(ci => { r.getCell(ci).numFmt = moneyFmt })
-  })
+      const r = ws.addRow(row)
+      r.getCell(1).numFmt = 'mm-dd-yy'
+      const moneyCols = isLorry ? [9, 10] : [8, 9, 10]
+      moneyCols.forEach(ci => { r.getCell(ci).numFmt = moneyFmt })
+    })
 
-  const lastDataRow = startDataRow + trips.length - 1
+    const lastDataRow = startDataRow + trips.length - 1
 
-  // Blank spacer row
-  ws.addRow([])
+    // Blank spacer row
+    ws.addRow([])
 
-  // Totals row — SUM formulas, matching the sample's live-formula approach
-  const sumCol = (colIdx) =>
-    `=SUM(${ws.getColumn(colIdx).letter}${startDataRow}:${ws.getColumn(colIdx).letter}${lastDataRow})`
+    // Totals row — SUM formulas, matching the sample's live-formula approach
+    const sumCol = (colIdx) =>
+      `=SUM(${ws.getColumn(colIdx).letter}${startDataRow}:${ws.getColumn(colIdx).letter}${lastDataRow})`
 
-  if (isLorry) {
-    const totalsRow = ws.addRow(['', '', '', '', '', '', '', '', { formula: sumCol(9) }, { formula: sumCol(10) }, 'TOTAL'])
-    totalsRow.eachCell(c => { c.font = { bold: true }; c.numFmt = moneyFmt })
+    if (isLorry) {
+      const totalsRow = ws.addRow(['', '', '', '', '', '', '', '', { formula: sumCol(9) }, { formula: sumCol(10) }, 'TOTAL'])
+      totalsRow.eachCell(c => { c.font = { bold: true }; c.numFmt = moneyFmt })
 
-    // BALANCE = RENT total - OTHER EXPENSE total
-    const incomeCell = `${ws.getColumn(9).letter}${totalsRow.number}`
-    const expCell = `${ws.getColumn(10).letter}${totalsRow.number}`
-    const balRow = ws.addRow(['', '', '', '', '', '', '', 'BALANCE', { formula: `=${incomeCell}-${expCell}` }])
-    balRow.getCell(9).font = { bold: true }
-    balRow.getCell(9).numFmt = moneyFmt
-    balRow.getCell(8).font = { bold: true }
-  } else {
-    const totalsRow = ws.addRow(['', '', '', '', '', '', '', { formula: sumCol(8) }, { formula: sumCol(9) }, { formula: sumCol(10) }, 'TOTAL'])
-    totalsRow.eachCell(c => { c.font = { bold: true }; c.numFmt = moneyFmt })
+      // BALANCE = RENT total - OTHER EXPENSE total
+      const incomeCell = `${ws.getColumn(9).letter}${totalsRow.number}`
+      const expCell = `${ws.getColumn(10).letter}${totalsRow.number}`
+      const balRow = ws.addRow(['', '', '', '', '', '', '', 'BALANCE', { formula: `=${incomeCell}-${expCell}` }])
+      balRow.getCell(9).font = { bold: true }
+      balRow.getCell(9).numFmt = moneyFmt
+      balRow.getCell(8).font = { bold: true }
+    } else {
+      const totalsRow = ws.addRow(['', '', '', '', '', '', '', { formula: sumCol(8) }, { formula: sumCol(9) }, { formula: sumCol(10) }, 'TOTAL'])
+      totalsRow.eachCell(c => { c.font = { bold: true }; c.numFmt = moneyFmt })
 
-    // BALANCE = INCOME total - (BATA total + DIESEL total)
-    const incomeCell = `${ws.getColumn(8).letter}${totalsRow.number}`
-    const bataCell = `${ws.getColumn(9).letter}${totalsRow.number}`
-    const dieselCell = `${ws.getColumn(10).letter}${totalsRow.number}`
-    const balRow = ws.addRow(['', '', '', '', '', '', 'BALANCE', { formula: `=${incomeCell}-(${bataCell}+${dieselCell})` }])
-    balRow.getCell(8).font = { bold: true }
-    balRow.getCell(8).numFmt = moneyFmt
-    balRow.getCell(7).font = { bold: true }
+      // BALANCE = INCOME total - (BATA total + DIESEL total)
+      const incomeCell = `${ws.getColumn(8).letter}${totalsRow.number}`
+      const bataCell = `${ws.getColumn(9).letter}${totalsRow.number}`
+      const dieselCell = `${ws.getColumn(10).letter}${totalsRow.number}`
+      const balRow = ws.addRow(['', '', '', '', '', '', 'BALANCE', { formula: `=${incomeCell}-(${bataCell}+${dieselCell})` }])
+      balRow.getCell(8).font = { bold: true }
+      balRow.getCell(8).numFmt = moneyFmt
+      balRow.getCell(7).font = { bold: true }
+    }
+
+    // Column widths, matching sample proportions
+    ws.columns.forEach((col, i) => { col.width = i === 0 ? 12 : 11 })
+
+    const monthLabel = month || new Date().toISOString().slice(0, 7)
+    const buf = await wb.xlsx.writeBuffer()
+    saveAs(new Blob([buf]), `trips_${monthLabel}.xlsx`)
   }
-
-  // Column widths, matching sample proportions
-  ws.columns.forEach((col, i) => { col.width = i === 0 ? 12 : 11 })
-
-  const monthLabel = month || new Date().toISOString().slice(0, 7)
-  const buf = await wb.xlsx.writeBuffer()
-  saveAs(new Blob([buf]), `trips_${monthLabel}.xlsx`)
-}
 
   const handleDelete = async (id) => {
     try { await deleteTrip(id); load() }
@@ -414,9 +422,13 @@ const handleExport = async () => {
 
   // Auto-preview values
   const previewIncome = !isLorry ? null :
-    (form.kmDriven && form.rentPerKm
-      ? `₹${(Number(form.kmDriven) * Number(form.rentPerKm)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-      : null)
+    form.rateType === 'tonnage'
+      ? (form.tonnage && form.rentPerTonnage
+        ? `₹${(Number(form.tonnage) * Number(form.rentPerTonnage)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+        : null)
+      : (form.kmDriven && form.rentPerKm
+        ? `₹${(Number(form.kmDriven) * Number(form.rentPerKm)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+        : null)
 
   const previewHours = isLorry ? null :
     (form.startingHours && form.closingHours
@@ -504,14 +516,14 @@ const handleExport = async () => {
                     {isLorry && <>
                       <th style={th}>Slip No</th>
                       <th style={th}>Lead KM</th>
-                      <th style={th}>U Chainage</th>
-                      <th style={th}>KM</th>
-                      <th style={th}>Rate/KM</th>
+                      <th style={th}>Basis</th>
+                      <th style={th}>Qty</th>
+                      <th style={th}>Rate</th>
                     </>}
                     <th style={{ ...th, textAlign: 'right' }}>Income</th>
-                     <th style={th}>SITE</th>
+                    <th style={th}>SITE</th>
                     <th style={{ ...th, width: 80 }}>Actions</th>
-                   
+
                   </tr>
                 </thead>
                 <tbody>
@@ -543,17 +555,27 @@ const handleExport = async () => {
                       </>}
                       {isLorry && <>
                         <td style={td(true)}>{t.slipNo || '—'}</td>
-                        <td style={td(true)}>{t.leadKm}</td>
-                        <td style={td(true)}>{t.uChainage}</td>
-                        <td style={td()}><strong>{t.kmDriven}</strong></td>
-                        <td style={td(true)}>{fmt(t.rentPerKm)}</td>
+                        <td style={td(true)}>{t.leadKm ?? '—'}</td>
+                        <td style={td()}>
+                          <span style={{
+                            display: 'inline-flex', padding: '3px 9px', borderRadius: 20,
+                            fontSize: 11, fontWeight: 600, textTransform: 'capitalize',
+                            background: t.rateType === 'tonnage' ? T.violetLight : T.blueLight,
+                            color: t.rateType === 'tonnage' ? T.violet : T.blue,
+                            border: `1px solid ${t.rateType === 'tonnage' ? T.violet + '40' : T.blueMid}`,
+                          }}>
+                            {t.rateType === 'tonnage' ? 'Tonnage' : 'KM'}
+                          </span>
+                        </td>
+                        <td style={td()}><strong>{t.rateType === 'tonnage' ? t.tonnage : t.kmDriven}</strong></td>
+                        <td style={td(true)}>{fmt(t.rateType === 'tonnage' ? t.rentPerTonnage : t.rentPerKm)}</td>
                       </>}
                       <td style={{ ...td(), textAlign: 'right', fontWeight: 700, color: T.success }}>
                         {fmt(t.income)}
                       </td>
                       <td style={td(true)}>{t.site || '—'}</td>
 
-                    <td style={{ ...td(), textAlign: 'center' }}>
+                      <td style={{ ...td(), textAlign: 'center' }}>
                         <span style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
                           {delId === t.id ? (
                             <>
@@ -688,26 +710,46 @@ const handleExport = async () => {
             <Field label="Slip No">
               <input placeholder="e.g. 44265" style={inputStyle(false)} {...field('slipNo')} />
             </Field>
-            <Field label="Lead KM">
+            <Field label="Lead KM" hint="Optional">
               <input type="number" step="0.01" placeholder="e.g. 21.40"
                 style={inputStyle(false)} {...field('leadKm')} />
             </Field>
+            <Field label="Rate Basis">
+              <select style={{ ...inputStyle(false), cursor: 'pointer' }} {...field('rateType')}>
+                <option value="km">KM Basis</option>
+                <option value="tonnage">Tonnage Basis</option>
+              </select>
+            </Field>
 
-            <Field label="U Chainage">
-              <input type="number" placeholder="e.g. 381900"
-                style={inputStyle(false)} {...field('uChainage')} />
-            </Field>
-            <Field label="KM Driven" required>
-              <input type="number" step="0.01" placeholder="e.g. 53.30"
-                style={inputStyle(false)} {...field('kmDriven')} />
-            </Field>
-            <Field label="Rent per KM (₹)">
-              <input type="number" step="0.01" placeholder="e.g. 175"
-                style={inputStyle(false)} {...field('rentPerKm')} />
-            </Field>
-            <Field label="Income (₹)" hint="Auto: KM × Rate">
-              <input readOnly style={inputStyle(true)} value={previewIncome ?? '—'} />
-            </Field>
+            {form.rateType === 'tonnage' ? (
+              <>
+                <Field label="Tonnage" required>
+                  <input type="number" step="0.01" placeholder="e.g. 12.5"
+                    style={inputStyle(false)} {...field('tonnage')} />
+                </Field>
+                <Field label="Rent per Tonnage (₹)">
+                  <input type="number" step="0.01" placeholder="e.g. 450"
+                    style={inputStyle(false)} {...field('rentPerTonnage')} />
+                </Field>
+                <Field label="Income (₹)" hint="Auto: Tonnage × Rate">
+                  <input readOnly style={inputStyle(true)} value={previewIncome ?? '—'} />
+                </Field>
+              </>
+            ) : (
+              <>
+                <Field label="KM Driven" required>
+                  <input type="number" step="0.01" placeholder="e.g. 53.30"
+                    style={inputStyle(false)} {...field('kmDriven')} />
+                </Field>
+                <Field label="Rent per KM (₹)">
+                  <input type="number" step="0.01" placeholder="e.g. 175"
+                    style={inputStyle(false)} {...field('rentPerKm')} />
+                </Field>
+                <Field label="Income (₹)" hint="Auto: KM × Rate">
+                  <input readOnly style={inputStyle(true)} value={previewIncome ?? '—'} />
+                </Field>
+              </>
+            )}
 
             <Field label="Other Expense (₹)">
               <input type="number" placeholder="Tolls etc."
